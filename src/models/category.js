@@ -59,9 +59,9 @@ categoryModel.Insertcategorys = (userData, callback) => {
 
 }
 
-categoryModel.updatecategorys = (userData, callback) => {
+categoryModel.updatecategorys = (categoryData, callback) => {
     if (connection) {
-        connection.query(` UPDATE CATEGORYS SET ? where `, userData,
+        connection.query(` UPDATE CATEGORYS SET ? where client_id = ${connection.escape(categoryData.client_id)} and id = ${connection.escape(categoryData.id)} `, categoryData,
             (err, rows) => {
                 if (err) {
                     throw err;

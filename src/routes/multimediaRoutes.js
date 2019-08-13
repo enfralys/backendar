@@ -28,7 +28,7 @@ module.exports = function(app) {
             if (!fs.existsSync(`resources/${id}/`)) {
                 fs.mkdirSync(`resources/${id}/`);
             }
-            if (mimetype != 'application/pdf') {
+            if (false) {
                 reply.status(400).send({
                     sucess: false,
                     err: "El tipo de archivo no es permitido"

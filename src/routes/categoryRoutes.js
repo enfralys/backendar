@@ -66,31 +66,46 @@ module.exports = function(app) {
         const mp = req.multipart(handler, done, options)
         let id;
         let data;
-        let media;
+        let test = {}; 
         mp.on('field', function(key, value) {
-            id = value;
-            if(key == "media"){
-                media = value;
-            }
-            data = value;
-       
+            test[key] = value;
             console.log('form-data', key, value)
         })
 
         function done(err) {
-            console.log('up',media)
-            if(  typeof media === 'string' ){
+            console.log('up',test)
+            if(  typeof test.media === 'string' ){
                 save();
             }
-            console.log('upload completed', JSON.parse(data))
+            console.log('upload completed',id)
             reply.code(200).send({ sucess: "Guardado Exitoso" })
         }
 
         function save(){
-                console.log("guardo sin crear archivo");
+            console.log(test.catId);
+            data=  JSON.parse(test.data);
+            const categoryData = {
+                category: data.name,
+                id:test.catId,
+                client_id: test.id,
+                status: data.status,
+                path_image:data.image,
+                description:data.description
+               
+            }  
+            category.updatecategorys(categoryData,(err,data) =>{
+                if (data) {
+                    console.log(data)
+                }else{
+                    console.log(err)
+                }
+            })
+            console.log("guardo sin crear archivo",categoryData);
+               
         }
 
         function handler(field, file, filename, encoding, mimetype) {
+            console.log(field)
             if (!fs.existsSync(`../resources/${id}/`, {recursive: true}, err => {console.log(err)})) {
                 fs.mkdirSync(`../resources/${id}/`, {recursive: true}, err => {console.log(err)});
             }
@@ -101,19 +116,41 @@ module.exports = function(app) {
                 })
             } else {
                 if (pump(file, fs.createWriteStream(`../resources/${id}/${filename}`))) {
-                      const userData = {
+                    const mediaData = {
                         client_id: id,
-                        category: data.name,
+                        process_id: 123,
+                        name: filename,
+                        local: "0",
                         domain: 1,
-                        path_data: `../resources/${id}/${filename}`,
+                        path_data: `resources/${id}/${filename}`,
                         is_path_ico: 'asa',
                         path_ico: 'asdad',
                         category: 0,
                         media_type_id: 4,
-                        metadata: 'Video de perrita',
+                        metadata: filename,
                     }
-                    console.log(userData)
-                    multimedia.saveVideos(userData, (err, data) => {
+                    console.log(test)
+                    data =  JSON.parse(test.data);
+                    const categoryData = {
+                        category: data.name,
+                        id:test.catId,
+                        client_id: test.id,
+                        status: data.status,
+                        path_image:`resources/${id}/${filename}`,
+                        description:data.description
+                       
+                    }  
+                    console.log(categoryData)
+                    category.updatecategorys(categoryData,(err,data) =>{
+                        if (data) {
+                            console.log(data)
+                        }else{
+                            console.log(err)
+                        }
+                    })
+
+                    
+                    multimedia.saveVideos(mediaData, (err, data) => {
                         if (data) {
                             console.log(data)
 
