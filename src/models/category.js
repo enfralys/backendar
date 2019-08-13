@@ -37,9 +37,9 @@ categoryModel.categorys = (userData, callback) => {
     ///*/////////////////////
 
 
-categoryModel.Insertcategorys = (userData, callback) => {
+categoryModel.Insertcategorys = (categoryData, callback) => {
     if (connection) {
-        connection.query(`INSERT INTO CATEGORYS SET ? where client_id = ${connection.escape(userData.id)} and where client_id = ${connection.escape(userData.category_id)} `, userData,
+        connection.query(`INSERT INTO CATEGORYS SET ? `, categoryData,
             (err, rows) => {
                 if (err) {
                     throw err;

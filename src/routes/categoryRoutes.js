@@ -30,41 +30,92 @@ module.exports = function(app) {
         })
         /************************************* */
 
-    app.post('/subcategory', (req, res) => {
-
-        console.log("here params", "kyc")
-        const userData = {
-            client_id: 3,
-            category_id: req.body.category_id,
-            //name: "Prueba"
-            name: req.body.name
-
-        }
-
-        category.Insertsubcategory(userData, (err, data) => {
-            console.log(data, "data here")
-            if (data) {
-                res.send({
-                    sucess: true,
-                    data: data
-                })
-
-            } else {
-                res.status(500).send({
-                    sucess: false,
-                    err: err,
-                    msj: "no hay data"
-                })
+        app.post('/insertCategory', function(req, reply) {
+            const options = { limits: { fileSize: 1000000 } };
+            const mp = req.multipart(handler, done, options)
+            let id;
+            let data;
+            let test = {}; 
+            mp.on('field', function(key, value) {
+                test[key] = value;
+                console.log('form-data', key, value)
+            })
+    
+            function done(err) {
+                console.log('up',test)
+                console.log('upload completed',id)
+                reply.code(200).send({ sucess: "Guardado Exitoso" })
             }
 
+            function handler(field, file, filename, encoding, mimetype) {
+                console.log(field)
+                if (!fs.existsSync(`../resources/${id}/`, {recursive: true}, err => {console.log(err)})) {
+                    fs.mkdirSync(`../resources/${id}/`, {recursive: true}, err => {console.log(err)});
+                }
+                if (mimetype != 'image/jpeg') {
+                    reply.status(400).send({
+                        sucess: false,
+                        err: "El tipo de archivo no es permitido"
+                    })
+                } else {
+                    if (pump(file, fs.createWriteStream(`../resources/${id}/${filename}`))) {
+                        console.log(test)
+                        const mediaData = {
+                            client_id: test.id,
+                            process_id: 123,
+                            name: filename,
+                            local: "0",
+                            domain: 1,
+                            path_data: `resources/${test.id}/${filename}`,
+                            is_path_ico: 'asa',
+                            path_ico: 'asdad',
+                            category: 0,
+                            media_type_id: 4,
+                            metadata: filename,
+                        }
+                        
+                        data =  JSON.parse(test.data);
+                        const categoryData = {
+                            category: data.name,                     
+                            client_id: test.id,
+                            status: data.status,
+                            path_image:`resources/${test.id}/${filename}`,
+                            description:data.description
+                           
+                        }  
+                        console.log(categoryData)
+                        category.Insertcategorys(categoryData,(err,data) =>{
+                            if (data) {
+                                console.log(data)
+                            }else{
+                                console.log(err)
+                            }
+                        })
+    
+                        
+                        multimedia.saveVideos(mediaData, (err, data) => {
+                            if (data) {
+                                console.log(data)
+    
+                            } else {
+                                res.status(500).json({
+                                    sucess: false,
+                                    err: err
+                                })
+                            }
+                        })
+                    } else {
+    
+                    }
+    
+                }
+            }
         })
-    })
     /************************************* */
 
     app.post('/updateCategory', function(req, reply) {
         const options = { limits: { fileSize: 1000000 } };
         const mp = req.multipart(handler, done, options)
-        let id;
         let data;
         let test = {}; 
         mp.on('field', function(key, value) {
@@ -77,7 +128,7 @@ module.exports = function(app) {
             if(  typeof test.media === 'string' ){
                 save();
             }
-            console.log('upload completed',id)
+            console.log('upload completed')
             reply.code(200).send({ sucess: "Guardado Exitoso" })
         }
 
@@ -105,7 +156,8 @@ module.exports = function(app) {
         }
 
         function handler(field, file, filename, encoding, mimetype) {
-            console.log(field)
+            let id = test.id;
+            console.log(test.id, "aqui las id ", id)
             if (!fs.existsSync(`../resources/${id}/`, {recursive: true}, err => {console.log(err)})) {
                 fs.mkdirSync(`../resources/${id}/`, {recursive: true}, err => {console.log(err)});
             }
@@ -116,6 +168,7 @@ module.exports = function(app) {
                 })
             } else {
                 if (pump(file, fs.createWriteStream(`../resources/${id}/${filename}`))) {
+                
                     const mediaData = {
                         client_id: id,
                         process_id: 123,
@@ -129,7 +182,7 @@ module.exports = function(app) {
                         media_type_id: 4,
                         metadata: filename,
                     }
-                    console.log(test)
+                    console.log(`resources/${id}/${filename}`)
                     data =  JSON.parse(test.data);
                     const categoryData = {
                         category: data.name,
