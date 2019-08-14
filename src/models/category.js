@@ -39,7 +39,7 @@ categoryModel.categorys = (userData, callback) => {
 
 categoryModel.Insertcategorys = (categoryData, callback) => {
     if (connection) {
-        connection.query(`INSERT INTO CATEGORYS SET ? `, categoryData,
+        connection.query(`INSERT INTO categorys SET ? `, categoryData,
             (err, rows) => {
                 if (err) {
                     throw err;
@@ -61,7 +61,7 @@ categoryModel.Insertcategorys = (categoryData, callback) => {
 
 categoryModel.updatecategorys = (categoryData, callback) => {
     if (connection) {
-        connection.query(` UPDATE CATEGORYS SET ? where client_id = ${connection.escape(categoryData.client_id)} and id = ${connection.escape(categoryData.id)} `, categoryData,
+        connection.query(` UPDATE categorys SET ? where client_id = ${connection.escape(categoryData.client_id)} and id = ${connection.escape(categoryData.id)} `, categoryData,
             (err, rows) => {
                 if (err) {
                     throw err;
