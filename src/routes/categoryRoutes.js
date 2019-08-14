@@ -216,7 +216,10 @@ module.exports = function(app) {
                         }
                     })
                 } else {
-
+                    res.status(500).json({
+                        sucess:"Ocurrio un error",
+                        err: err
+                    })
                 }
 
             }
