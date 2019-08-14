@@ -157,9 +157,10 @@ module.exports = function(app) {
 
         function handler(field, file, filename, encoding, mimetype) {
             let id = test.id;
-            console.log(test.id, "aqui las id ", id)
+          // console.log(test.id, "aqui las id ", id)
             if (!fs.existsSync(`../resources/${id}/`, {recursive: true}, err => {console.log(err)})) {
                 fs.mkdirSync(`../resources/${id}/`, {recursive: true}, err => {console.log(err)});
+                console.log("SI SE SUPONE QUE CREO LA CARPETA")
             }
             if (mimetype != 'image/jpeg') {
                 reply.status(400).send({
@@ -168,7 +169,7 @@ module.exports = function(app) {
                 })
             } else {
                 if (pump(file, fs.createWriteStream(`../resources/${id}/${filename}`))) {
-                
+                    console.log("SI SE SUPONE QUE CREO LA image")
                     const mediaData = {
                         client_id: id,
                         process_id: 123,
