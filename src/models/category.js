@@ -1,12 +1,7 @@
 const mysql = require('mysql')
+const configs = require('../configs')
 
-
-connection = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: 'Dev@2019_R1',
-    database: 'backend'
-})
+connection = mysql.createConnection(configs.mysqlData())
 
 let categoryModel = {
 
@@ -58,7 +53,7 @@ categoryModel.Insertcategorys = (categoryData, callback) => {
     }
 
 }
-
+ ///*/////////////////////
 categoryModel.updatecategorys = (categoryData, callback) => {
     if (connection) {
         connection.query(` UPDATE categorys SET ? where client_id = ${connection.escape(categoryData.client_id)} and id = ${connection.escape(categoryData.id)} `, categoryData,
@@ -80,7 +75,28 @@ categoryModel.updatecategorys = (categoryData, callback) => {
     }
 
 }
+/************************************* */
+categoryModel.deleteCategorys = (categoryData, callback) => {
+    if (connection) {
+        connection.query(` DELETE FROM categorys where client_id = ${connection.escape(categoryData.client_id)} and id = ${connection.escape(categoryData.id)} `, categoryData,
+            (err, rows) => {
+                if (err) {
+                    throw err;
+                } else {
 
+                    if (rows.length == 0) {
+                        callback(null, { data: false })
+                    } else {
+                        callback(null, rows)
+                        console.log(rows)
+                    }
+
+                }
+            })
+
+    }
+
+}
 /************************************* */
 categoryModel.Insertsubcategory = (userData, callback) => {
         if (connection) {

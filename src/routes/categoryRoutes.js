@@ -28,6 +28,38 @@ module.exports = function(app) {
 
             })
         })
+     /************************************* */
+    app.delete('/category', (req, res) => {
+        console.log("here params",req.query);
+        if (!req.query.id || !req.query.client_id ) {
+          return  res.status(400).send({
+                sucess: false,
+                msj: "Error al recibir data"
+            })
+        }
+        const categoryData = {
+            id: req.query.id,
+            client_id:req.query.client_id
+        }
+        category.deleteCategorys(categoryData, (err, data) => {
+            console.log(data, "data here")
+            if (data) {
+                res.send({
+                    sucess: true,
+                    data: data,
+                    msj: "Categoria Eliminada con Exito"
+                })
+
+            } else {
+                res.status(500).send({
+                    sucess: false,
+                    err: err,
+                    msj: "no hay data"
+                })
+            }
+
+        })
+    })
         /************************************* */
 
         app.post('/insertCategory', function(req, reply) {
@@ -44,21 +76,24 @@ module.exports = function(app) {
             function done(err) {
                 console.log('up',test)
                 console.log('upload completed',id)
-                reply.code(200).send({ sucess: "Guardado Exitoso" })
+                reply.code(200).send({ 
+                    sucess: true,
+                    msj: "Categoria guardada exitosamente"
+                })
             }
 
             function handler(field, file, filename, encoding, mimetype) {
                 console.log(field)
-                if (!fs.existsSync(`../resources/${id}/`, {recursive: true}, err => {console.log(err)})) {
-                    fs.mkdirSync(`../resources/${id}/`, {recursive: true}, err => {console.log(err)});
+                if (!fs.existsSync(`./resources/${id}/`, {recursive: true}, err => {console.log(err)})) {
+                    fs.mkdirSync(`./resources/${id}/`, {recursive: true}, err => {console.log(err)});
                 }
                 if (mimetype != 'image/jpeg') {
-                    reply.status(400).send({
+                   return reply.status(400).send({
                         sucess: false,
                         err: "El tipo de archivo no es permitido"
                     })
                 } else {
-                    if (pump(file, fs.createWriteStream(`../resources/${id}/${filename}`))) {
+                    if (pump(file, fs.createWriteStream(`./resources/${id}/${filename}`))) {
                         console.log(test)
                         const mediaData = {
                             client_id: test.id,
@@ -98,9 +133,9 @@ module.exports = function(app) {
                                 console.log(data)
     
                             } else {
-                                res.status(500).json({
+                               return res.status(500).json({
                                     sucess: false,
-                                    err: err
+                                    msj: "No se pudo crear la imagen"
                                 })
                             }
                         })
@@ -157,9 +192,9 @@ module.exports = function(app) {
 
         function handler(field, file, filename, encoding, mimetype) {
             let id = test.id;
-          // console.log(test.id, "aqui las id ", id)
-            if (!fs.existsSync(`../resources/${id}/`, {recursive: true}, err => {console.log(err)})) {
-                fs.mkdirSync(`../resources/${id}/`, {recursive: true}, err => {console.log(err)});
+           console.log("1");
+            if (!fs.existsSync(`./resources/${id}/`, {recursive: true}, err => {console.log(err)})) {
+                fs.mkdirSync(`./resources/${id}/`, {recursive: true}, err => {console.log(err)});
                 console.log("SI SE SUPONE QUE CREO LA CARPETA")
             }
             if (mimetype != 'image/jpeg') {
@@ -168,7 +203,8 @@ module.exports = function(app) {
                     err: "El tipo de archivo no es permitido"
                 })
             } else {
-                if (pump(file, fs.createWriteStream(`../resources/${id}/${filename}`))) {
+                console.log("2");
+                if (pump(file, fs.createWriteStream(`./resources/${id}/${filename}`))) {
                     console.log("SI SE SUPONE QUE CREO LA image")
                     const mediaData = {
                         client_id: id,
@@ -216,8 +252,9 @@ module.exports = function(app) {
                         }
                     })
                 } else {
+                    console.log("1");
                     res.status(500).json({
-                        sucess:"Ocurrio un error",
+                        sucess:"Ocurrio un error no creo nada",
                         err: err
                     })
                 }

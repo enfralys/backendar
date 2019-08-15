@@ -1,12 +1,7 @@
 const mysql = require('mysql')
+const configs = require('../configs')
 
-
-connection = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: 'Dev@2019_R1',
-    database: 'backend'
-})
+connection = mysql.createConnection(configs.mysqlData())
 
 let multimediaModel = {
 

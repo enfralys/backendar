@@ -1,16 +1,9 @@
 const mysql = require('mysql')
+const configs = require('../configs')
 
+connection = mysql.createConnection(configs.mysqlData())
 
-connection = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: 'Dev@2019_R1',
-    database: 'backend'
-})
-
-let userModel = {
-
-}
+let userModel = {}
 
 userModel.login = (userData, callback) => {
         if (connection) {
