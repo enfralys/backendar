@@ -1,3 +1,5 @@
+const mysql = require('mysql')
+
 
 
 let configs = {}
@@ -13,5 +15,4 @@ configs.mysqlData = () => {
     }
 }
 
-    
 module.exports = configs;
