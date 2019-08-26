@@ -1,15 +1,10 @@
 const mysql = require('mysql')
 const configs = require('../configs')
-<<<<<<< HEAD
-=======
-
->>>>>>> e8dd3e43cdb2027212074e6bad6ae337416029b8
 connection = mysql.createConnection(configs.mysqlData())
 
 let subCategoryModel = {}
 
     subCategoryModel.create = (data, callback)  => {
-<<<<<<< HEAD
         console.log(data, "alv we");
         if(connection) {
              connection.query("INSERT INTO `sub-category`(`client_id`, `category_id`, `name`,`description`,`status`) VALUES" + `(${data.client_id},${data.category_id},'${data.name}','${data.description}','${data.status}')`,
@@ -41,11 +36,6 @@ let subCategoryModel = {}
         console.log(data, "alv we");
         if(connection) {
             connection.query("  UPDATE `sub-category` SET ? where "+ ` client_id = ${connection.escape(data.client_id)} and id = ${connection.escape(data.id)} `, data,
-=======
-
-        if(connection) {
-            connection.query("(INSERT INTO 'sub-category' SET  ?)",data,
->>>>>>> e8dd3e43cdb2027212074e6bad6ae337416029b8
             (err,rows)=> {
                 if(err) throw err;
                 const callbackResult = !rows.length ? { data :false } : rows;
@@ -53,7 +43,6 @@ let subCategoryModel = {}
             }
 
             )} 
-<<<<<<< HEAD
     }
      /***********************************************/
     
@@ -85,11 +74,6 @@ let subCategoryModel = {}
 
             )} 
     }
-=======
-    
-    }
-
->>>>>>> e8dd3e43cdb2027212074e6bad6ae337416029b8
     module.exports = subCategoryModel;
 
 
