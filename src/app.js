@@ -35,8 +35,10 @@
 
  //routes
  require('./routes/userRoutes')(app);
+ require('./routes/productRoutes')(app);
  require('./routes/categoryRoutes')(app);
  require('./routes/multimediaRoutes')(app);
+ require('./routes/subcategoryRoutes')(app);
  // Run the server!
 
  app.post('/a', (request, reply) => {

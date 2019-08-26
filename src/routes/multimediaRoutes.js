@@ -1,5 +1,6 @@
 const multimedia = require('../models/multimedia')
 var fs = require('fs');
+const multimediaController = require ('../controllers/multimediaCtrl');
 const pump = require('pump');
 /* const express = require (' express ');
 const fileUpload = require ('express-fileupload');
@@ -8,7 +9,12 @@ module.exports = function(app) {
 
 
 
+
     /**************************************** */
+    app.post('/slider', multimediaController.createSlider);
+    app.get('/slider', multimediaController.getSlider);
+    app.delete('/slider', multimediaController.deleteSlider);
+    
     app.post('/upload', function(req, reply) {
         const options = { limits: { fileSize: 1000 } };
         const mp = req.multipart(handler, done, options)

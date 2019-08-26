@@ -1,151 +1,64 @@
-const mysql = require('mysql')
+const mysql = require('mysql');
+const configs = require('../configs');
+const subCategory = require('../models/subCategory');
 
+   console.log(configs, "aja");
 
-connection = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: 'Dev@2019_R1',
-    database: 'backend'
-})
+   connection = mysql.createConnection(configs.mysqlData());
 
 let categoryModel = {
 
 }
 
-
-categoryModel.categorys = (userData, callback) => {
+categoryModel.getCategorys = (data, callback) => {
         if (connection) {
-            connection.query(`SELECT id,category,path_image,description,status FROM categorys  where client_id = ${connection.escape(userData.id)}`,
-                (err, rows) => {
-                    if (err) {
-                        throw err;
-                    } else {
+            connection.query(`SELECT id,category,path_image,description,status FROM categorys  where client_id = ${connection.escape(data.client_id)}`,
+            (err,rows)=> {
+                if(err) throw err;
+                const callbackResult = !rows.length ? { data :false } : rows;
+                callback(null,callbackResult);
+            }
 
-                        if (rows.length == 0) {
-                            callback(null, { data: false })
-                        } else {
-                            callback(null, rows)
-                            console.log(rows)
-                        }
-
-                    }
-                })
-
-        }
-
+            )} 
     }
-    ///*/////////////////////
+///*/////////////////////
 
 
-categoryModel.Insertcategorys = (categoryData, callback) => {
+categoryModel.createCategorys = (categoryData, callback) => {
     if (connection) {
         connection.query(`INSERT INTO categorys SET ? `, categoryData,
-            (err, rows) => {
-                if (err) {
-                    throw err;
-                } else {
-
-                    if (rows.length == 0) {
-                        callback(null, { data: false })
-                    } else {
-                        callback(null, rows)
-                        console.log(rows)
-                    }
-
-                }
-            })
-
-    }
-
-}
-
-categoryModel.updatecategorys = (categoryData, callback) => {
-    if (connection) {
-        connection.query(` UPDATE categorys SET ? where client_id = ${connection.escape(categoryData.client_id)} and id = ${connection.escape(categoryData.id)} `, categoryData,
-            (err, rows) => {
-                if (err) {
-                    throw err;
-                } else {
-
-                    if (rows.length == 0) {
-                        callback(null, { data: false })
-                    } else {
-                        callback(null, rows)
-                        console.log(rows)
-                    }
-
-                }
-            })
-
-    }
-
-}
-
-/************************************* */
-categoryModel.Insertsubcategory = (userData, callback) => {
-        if (connection) {
-            connection.query('INSERT INTO `sub-category` SET  ?', userData,
-                (err, rows) => {
-                    if (err) {
-                        throw err;
-                    } else {
-
-                        if (rows.length == 0) {
-                            callback(null, { data: false })
-                        } else {
-                            callback(null, rows)
-                            console.log(rows)
-                        }
-
-                    }
-                })
-
+        (err,rows)=> {
+            if(err) throw err;
+            const callbackResult = !rows.length ? { data :false } : rows;
+            callback(null,callbackResult)
         }
 
-    }
-    /************************************* */
-categoryModel.getsubcategory = (userData, callback) => {
-    if (connection) {
-        connection.query('SELECT `id`,`category_id`, `name` FROM `sub-category` where `client_id` =' + `${connection.escape(userData.id)}`,
-            (err, rows) => {
-                if (err) {
-                    throw err;
-                } else {
-
-                    if (rows.length == 0) {
-                        callback(null, { data: false })
-                    } else {
-                        callback(null, rows)
-                        console.log(rows)
-                    }
-
-                }
-            })
-
-    }
-
+        )} 
 }
+ ///*/////////////////////
+categoryModel.updateCategorys = (categoryData, callback) => {
+    if (connection) {
+        connection.query(` UPDATE categorys SET ? where client_id = ${connection.escape(categoryData.client_id)} and id = ${connection.escape(categoryData.id)} `, categoryData,
+        (err,rows)=> {
+            if(err) throw err;
+            const callbackResult = !rows.length ? { data :false } : rows;
+            callback(null,callbackResult)
+        }
 
+        )} 
+}
 /************************************* */
-
-categoryModel.getCategory = (userData, callback) => {
+categoryModel.deleteCategorys = (categoryData, callback) => {
     if (connection) {
-        connection.query('SELECT `id`, `category`, `client_id`, `path_image`,`name` FROM `categorys` WHERE `client_id` =' + `${connection.escape(userData.id)}`),
-            (err, rows) => {
-                if (err) {
-                    throw err;
-                } else {
-                    if (rows.length == 0) {
-                        callback(null, { data: false })
-                    } else {
-                        callback(null, rows)
-                        console.log(rows)
-                    }
-                }
-            }
-    }
-}
+        connection.query(` DELETE FROM categorys where client_id = ${connection.escape(categoryData.client_id)} and id = ${connection.escape(categoryData.id)} `, categoryData,
+        (err,rows)=> {
+            if(err) throw err;
+            const callbackResult = !rows.length ? { data :false } : rows;
+            callback(null,callbackResult)
+        }
 
+        )} 
+}
 
 
 
