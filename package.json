@@ -1,0 +1,23 @@
+{
+  "name": "ekiaserver",
+  "version": "1.0.0",
+  "description": "Enterprise server for ekia technology.",
+  "main": "app.js",
+  "scripts": {
+    "test": "run",
+    "dev": "pm2 start app --max-memory-restart 130M",
+    "stop": "pm2 stop app"
+  },
+  "author": "leonardo monzon",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.19.2",
+    "express": "^4.17.1",
+    "express-jwt": "^5.3.3",
+    "jsonwebtoken": "^8.5.1",
+    "jwt-express": "^1.1.0",
+    "mqtt": "^3.0.0",
+    "mqtt-connection": "^4.0.0",
+    "seqid": "^1.0.1"
+  }
+}

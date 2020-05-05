@@ -1,0 +1,13 @@
+Example app listening on port 3000!
+conectado
+true 'el topico es : checked'
+0 'DOROTI-A001'
+{ deviceId: 'DOROTI-A001', check: 1 } 'Aqui guarda al iniciar'
+DOROTI-A001
+Debug-: 0 checked
+true 'el topico es : checked'
+1 'DOROTI-A000'
+
+guardo
+DOROTI-A000
+Debug-: 1 checked
