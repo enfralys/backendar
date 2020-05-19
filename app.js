@@ -9,10 +9,9 @@ app.use(bodyParser.urlencoded({ extended: true }))
 var jwtClave="laclave_de_cecilio";
 
 
-
+require('./src/middleware/logs')
 app.use(expressJwt({secret:jwtClave}).unless({path: ["/api/login"]}));
 
-app.use(mid.max_request);
 require('./src/routes/doroti')(app);
 
   

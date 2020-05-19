@@ -1,5 +1,6 @@
 var mqtt = require('mqtt');
 const axios = require('axios')
+const log = require('../middleware/logs')
 const mid = require('../middleware/dorotiMiddleware')
 var opts = {
   clientId: "Ekiaa",
@@ -19,7 +20,7 @@ check();
 
 setInterval(() => {
   garbageCollector();
-}, 2000);
+}, 10000);
 client.on('connect', function () {
   client.subscribe('cmdGeneral', {
     qos: 2
@@ -50,7 +51,7 @@ client.on('message', function (topic, message) {
     let msj = JSON.parse(message.toString());
     switch (msj.d.type) {
       case 'transResponse':
-      console.log("cierre");
+        console.log("cierre");
         sendDispensationClose(msj);
         break;
       case 'dispendResponse':
@@ -105,6 +106,7 @@ funtions.setProvider = (req, res) => {
   })
 }
 
+
 funtions.general = (req, res) => {
   let sque = id.next()
   console.log(req.body);
@@ -146,7 +148,7 @@ funtions.general = (req, res) => {
 }
 
 
-funtions.getInventory = (req, res ) => {
+funtions.getInventory = (req, res) => {
   let sque = id.next()
   console.log(req.body);
   let json = {
@@ -223,51 +225,51 @@ funtions.changePassword = (req, res) => {
 
 
 funtions.authAcess = (req, res) => {
-  let sque = id.next()
-  console.log(req.body);
+  try {
+    let sque = id.next()
+    log.general.info("Autorizacion de cargue", req.body, "id", sque);
+    onReques++;
+    timeout(req,res);
+    if (req.body.idProveedor && req.body.password && req.body.slots && req.body.deviceId) {
 
-
-  let json = {
-    messageId: sque,
-    command: "autorizarProveedor",
-    idProveedor: req.body.idProveedor,
-    password: req.body.password,
-    slots: req.body.slots,
-  }
-
-
-  onReques++;
-  client.publish('command/' + req.body.deviceId, JSON.stringify(json), {
-    qos: 2,
-    retain: true
-  }, function (err, menssage) {
-    if (!err) {
-
-
-      console.log("sendend");
-    } else {
-      console.log("Mengaje", err);
-    }
-  })
-  client.on('message', function (topic, message) {
-    // message is Buffer
-    console.log(message.toString(), sque)
-    let ase = {};
-    ase = JSON.parse(message.toString());
-    try {
-      if (ase.d.messageId == sque) {
-        res.end(message.toString());
-        onReques--;
+      let json = {
+        messageId: sque,
+        command: "autorizarProveedor",
+        idProveedor: req.body.idProveedor,
+        password: req.body.password,
+        slots: req.body.slots,
       }
-    } catch (error) {
+      publicar(req.body.deviceId, json);
+      client.on('message', function (topic, message) {
+        // message is Buffer
+        console.log(message.toString(), sque)
+        let ase = {};
+        ase = JSON.parse(message.toString());
+        try {
+          if (ase.d.messageId == sque) {
+            res.end(message.toString());
+            onReques--;
+          }
+        } catch (error) {
 
+        }
+
+
+
+
+      })
+    } else {
+      res.status(400).send({ error: 'parameters wrong' })
+      log.general.error('Error de parametros', req.body)
     }
 
-
-
-
-  })
+  } catch (error) {
+    log.error.error(error)
+  }
 }
+
+
+
 funtions.autorizar = (req, res) => {
   let sque = id.next()
 
@@ -405,6 +407,8 @@ funtions.test = (req, res) => {
   })
 
 }
+
+
 funtions.getConftemp = (req, res) => {
   let sque = id.next()
   console.log(req.body);
@@ -594,6 +598,8 @@ funtions.setTemp = (req, res) => {
 
 }
 
+
+
 funtions.peso = (req, res) => {
   let sque = id.next()
   console.log(req.body);
@@ -687,6 +693,9 @@ funtions.setPeso = (req, res) => {
   })
 
 }
+
+
+
 funtions.getProduct = (req, res) => {
   let sque = id.next()
   console.log(req.body);
@@ -1017,19 +1026,42 @@ funtions.deleteUser = () => {
       }
     }).then((res) => {
       console.log(`statusCode: ${res.statusCode}`)
-      console.log(res)
+
     })
     .catch((error) => {
-      console.error(error)
+      log.error.error(error.err)
     })
 }
 
+function publicar(deviceId, msg) {
+  client.publish('command/' + deviceId, JSON.stringify(msg), {
+    qos: 2,
+    retain: true
+  }, function (err, menssage) {
+    if (!err) {
+
+
+      console.log("sendend");
+    } else {
+      console.log("Mengaje", err);
+    }
+  })
+}
+
+function timeout(req,res) {
+setTimeout(() => {
+  onReques--;
+  client.removeOutgoingMessage();
+  return res.end('TimeOut make a new request')
+}, 10000);
+ 
+}
 
 function garbageCollector() {
   console.log(onReques);
   if (onReques == 0) {
     client.removeListener('message', function (params) {
-      
+
     });
 
   }

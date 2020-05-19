@@ -18,6 +18,8 @@
     "jwt-express": "^1.1.0",
     "mqtt": "^3.0.0",
     "mqtt-connection": "^4.0.0",
-    "seqid": "^1.0.1"
+    "seqid": "^1.0.1",
+    "simple-node-logger": "^18.12.24",
+    "winston": "^3.2.1"
   }
 }
